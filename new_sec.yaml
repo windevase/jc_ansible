@@ -1,0 +1,95 @@
+- name: Ansible Playbook for Windows Server
+  hosts: all
+  tasks:
+    - name: Create a directory if it does not exist
+      win_file:
+        path: C:\\JOYSEC
+        state: directory
+
+    - name: Copy JOYSEC.zip file to the remote server
+      win_copy:
+        src: /sec/JOYSEC.zip
+        dest: C:\\JOYSEC\\JOYSEC.zip
+
+    - name: Execute the unzip PowerShell command on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath 'C:\\JOYSEC\\JOYSEC.zip' -DestinationPath 'C:\\JOYSEC\\'"
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0
+
+    - name: Change directory to C:\JOYSEC
+      win_shell: |
+        chdir C:\\JOYSEC
+      become: yes
+      become_user: jcadmin
+
+    - name: Execute the PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\JOYSEC\\excute.ps1
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0
+
+    - name: Pause for 100 seconds
+      pause:
+        seconds: 100
+
+    - name: Get current date
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+    - name: Find log files
+      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*{{ current_date }}*.log" | Select-Object -ExpandProperty FullName
+      register: log_files
+
+    - name: Fetch log files from remote server
+      fetch:
+        src: "{{ item }}"
+        dest: "/seclog/"
+        flat: yes
+      with_items: "{{ log_files.stdout_lines }}"
+
+    - name: Create a directory if it does not exist
+      win_file:
+        path: C:\\joycity-system\\winlogbeat\\
+        state: directory
+
+    - name: Copy winlogbeat.zip file to the remote server
+      win_copy:
+        src: /sec/joycity-winlogbeat.zip
+        dest: C:\\joycity-system\\winlogbeat\\joycity-winlogbeat.zip
+
+    - name: Execute the winlogbeat-configure PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath 'C:\\joycity-system\\winlogbeat\\joycity-winlogbeat.zip' -DestinationPath 'C:\\joycity-system\\winlogbeat\\'"
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0
+
+    - name: Pause for 40 seconds
+      pause:
+        seconds: 40
+
+    - name: Execute the winlogbeat-install PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\joycity-system\\winlogbeat\\install-service-winlogbeat.ps1
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0
+
+    - name: Pause for 40 seconds
+      pause:
+        seconds: 40
+
+    - name: Execute the winlogbeat-configure PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0

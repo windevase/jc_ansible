@@ -1,0 +1,7 @@
+[all:vars]
+ansible_user=ID
+ansible_password="PW"
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_port=5986
+ansible_winrm_scheme=https

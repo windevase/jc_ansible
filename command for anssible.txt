@@ -5,3 +5,7 @@ ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_copy.yaml
 ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_excute.yaml
 
 ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_fetch.yaml
+
+ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_sec.yaml
+
+ansible-playbook -i hosts -i win_hosts win_sec.yaml

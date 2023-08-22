@@ -34,12 +34,12 @@
         powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\JOYSEC\\excute.ps1
       become: yes
       become_user: jcadmin
-      async: 60
+      async: 120
       poll: 0
 
-    - name: Pause for 40 seconds
+    - name: Pause for 100 seconds
       pause:
-        seconds: 40
+        seconds: 100
 
     - name: Get current date
       set_fact:

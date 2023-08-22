@@ -41,8 +41,12 @@
       pause:
         seconds: 40
 
+    - name: Get current date
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
     - name: Find log files
-      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*20230821*.log" | Select-Object -ExpandProperty FullName
+      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*{{ current_date }}*.log" | Select-Object -ExpandProperty FullName
       register: log_files
 
     - name: Fetch log files from remote server

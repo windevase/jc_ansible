@@ -1,0 +1,53 @@
+- name: Ansible Playbook for Windows Server
+  hosts: all
+  tasks:
+    - name: Create a directory if it does not exist
+      win_file:
+        path: C:\\JOYSEC\\script
+        state: directory
+
+    - name: Copy files in /sec/script to the remote server
+      win_copy:
+        src: "{{ item }}"
+        dest: "C:\\JOYSEC\\script\\"
+      with_fileglob:
+        - "/sec/script/*"
+
+    - name: Copy .bat file to the remote server
+      win_copy:
+        src: /sec/23-Windows_v2.0.1.bat
+        dest: C:\\JOYSEC\\23-Windows_v2.0.1.bat
+
+    - name: Copy .ps1 file to the remote server
+      win_copy:
+        src: /sec/excute.ps1
+        dest: C:\\JOYSEC\\excute.ps1
+
+    - name: Change directory to C:\JOYSEC
+      win_shell: |
+        chdir C:\\JOYSEC
+      become: yes
+      become_user: jcadmin
+
+    - name: Execute the PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\JOYSEC\\excute.ps1
+      become: yes
+      become_user: jcadmin
+      async: 60
+      poll: 0
+
+    - name: Pause for 20 seconds
+      pause:
+        seconds: 20
+
+    - name: Find log files
+      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*20230821*.log" | Select-Object -ExpandProperty FullName
+      register: log_files
+
+    - name: Fetch log files from remote server
+      fetch:
+        src: "{{ item }}"
+        dest: "/seclog/"
+        flat: yes
+      with_items: "{{ log_files.stdout_lines }}"

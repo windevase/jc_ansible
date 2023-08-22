@@ -1,0 +1,7 @@
+ansible all -i inventory_aws_ec2.yaml -i win_hosts -m win_ping
+
+ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_copy.yaml
+
+ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_excute.yaml
+
+ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_fetch.yaml

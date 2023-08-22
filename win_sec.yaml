@@ -37,9 +37,9 @@
       async: 60
       poll: 0
 
-    - name: Pause for 20 seconds
+    - name: Pause for 40 seconds
       pause:
-        seconds: 20
+        seconds: 40
 
     - name: Find log files
       win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*20230821*.log" | Select-Object -ExpandProperty FullName

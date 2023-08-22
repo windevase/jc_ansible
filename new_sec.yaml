@@ -62,7 +62,7 @@
         src: /sec/joycity-winlogbeat.zip
         dest: C:\\joycity-system\\winlogbeat\\joycity-winlogbeat.zip
 
-    - name: Execute the winlogbeat-configure PowerShell script on the remote server
+    - name: Execute the unzip PowerShell command on the remote server
       win_shell: |
         powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath 'C:\\joycity-system\\winlogbeat\\joycity-winlogbeat.zip' -DestinationPath 'C:\\joycity-system\\winlogbeat\\'"
       become: yes

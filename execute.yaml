@@ -6,25 +6,6 @@
         path: C:\\JOYSEC\\script
         state: directory
 
-    - name: Copy files in /sec/script to the remote server
-      win_copy:
-        src: "{{ item }}"
-        dest: "C:\\JOYSEC\\script\\"
-      with_fileglob:
-        - "/sec/script/*"
-
-    - name: Copy files in /sec/ to the remote server
-      win_copy:
-        src: "{{ item }}"
-        dest: "C:\\JOYSEC\\"
-      with_fileglob:
-        - "/sec/*"
-
-    - name: Copy .ps1 file to the remote server
-      win_copy:
-        src: /sec/excute.ps1
-        dest: C:\\JOYSEC\\excute.ps1
-
     - name: Change directory to C:\JOYSEC
       win_shell: |
         chdir C:\\JOYSEC
@@ -58,15 +39,5 @@
         flat: yes
       with_items: "{{ log_files.stdout_lines }}"
 
-    - name: Copy winlogbeat-configure.ps1 file to the remote server
-      win_copy:
-        src: /winlogbeat/for_all-winlogbeat-configure.ps1
-        dest: C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
 
-    - name: Execute the winlogbeat-configure PowerShell script on the remote server
-      win_shell:
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
-      become: yes
-      become_user: jcadmin
-      async: 120
-      poll: 0
+

@@ -1,0 +1,17 @@
+- name: Terminate find.exe process on Windows
+  hosts: all
+  gather_facts: no
+
+  tasks:
+  - name: Get the PID of find.exe
+    win_shell: |
+      $process = Get-Process -Name find -ErrorAction SilentlyContinue
+      if ($process) { $process.Id } else { "Not found" }
+    register: result
+
+  - name: Terminate find.exe process
+    win_shell: |
+      Stop-Process -Id {{ result.stdout }} -Force
+    when: result.stdout != "Not found"
+    async: 20
+    poll: 0

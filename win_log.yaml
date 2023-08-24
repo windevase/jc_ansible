@@ -3,7 +3,7 @@
   tasks:
     - name: Create a directory if it does not exist
       win_file:
-        path: C:\\JOYSEC\\script
+        path: C:\\joycity-system\\winlogbeat
         state: directory
 
     - name: Copy winlogbeat-configure.ps1 file to the remote server

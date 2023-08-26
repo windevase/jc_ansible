@@ -1,0 +1,10 @@
+---
+- name: Shutdown Windows Server
+  hosts: all  # 대상 윈도우 서버의 호스트 그룹이나 호스트명으로 변경해주세요
+  gather_facts: false
+
+  tasks:
+    - name: Shutdown the Windows Server
+      win_command: shutdown /s /f /t 0
+      async: 10
+      poll: 0

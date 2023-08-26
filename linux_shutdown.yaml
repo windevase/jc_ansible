@@ -1,0 +1,8 @@
+---
+- name: Shutdown Linux hosts
+  hosts: all
+  tasks:
+    - name: Shutdown host
+      command: shutdown -h now
+      async: 10
+      poll: 0

@@ -1,0 +1,5 @@
+[all:vars]
+ansible_user=ID
+ansible_password=PW
+ansible_port=22
+host_key_checking = false

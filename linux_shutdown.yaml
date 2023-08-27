@@ -4,6 +4,6 @@
   become: true
   tasks:
     - name: Shutdown host
-      command: shutdown -h now
+      command: init 0
       async: 10
       poll: 0

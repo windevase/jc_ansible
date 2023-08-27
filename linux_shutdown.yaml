@@ -1,6 +1,7 @@
 ---
 - name: Shutdown Linux hosts
   hosts: all
+  become: true
   tasks:
     - name: Shutdown host
       command: shutdown -h now

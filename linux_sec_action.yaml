@@ -13,6 +13,22 @@
         src: /linuxsec/
         dest: /linuxsec/
 
+    - name: Find the latest version of the action script
+      shell: find /linuxsec/ -type f -name "Linux_sec_action_*.sh" | sort -V | tail -n 1
+      register: latest_action_script
+
+    - name: Execute action script on remote server
+      shell: sh "{{ latest_action_script.stdout }}"
+      become: yes
+      args:
+        chdir: /linuxsec/
+      async: 10
+      poll: 0
+
+    - name: Pause for 10 seconds
+      pause:
+        seconds: 10
+
     - name: Find the latest version of the script
       shell: find /linuxsec/ -type f -name "*-linux_*.sh" | sort -V | tail -n 1
       register: latest_script

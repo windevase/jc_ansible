@@ -1,0 +1,70 @@
+- name: Ansible Playbook for Windows Server
+  hosts: all
+  tasks:
+    - name: Create a directory if it does not exist
+      win_file:
+        path: C:\\JOYSEC\\script
+        state: directory
+
+    - name: Copy files in /sec/script to the remote server
+      win_copy:
+        src: "{{ item }}"
+        dest: "C:\\JOYSEC\\script\\"
+      with_fileglob:
+        - "/sec/script/*"
+
+    - name: Copy files in /sec/ to the remote server
+      win_copy:
+        src: "{{ item }}"
+        dest: "C:\\JOYSEC\\"
+      with_fileglob:
+        - "/sec/*"
+
+    - name: Change directory to C:\JOYSEC
+      win_shell: |
+        chdir C:\\JOYSEC
+      become: yes
+      become_user: jcadmin
+
+    - name: Find the latest version of the sec_action script
+      win_shell: |
+        Get-ChildItem C:\JOYSEC\ -Filter Windows_sec_action_*.ps1 | Sort-Object -Property Name | Select-Object -Last 1 | ForEach-Object { $_.FullName }
+      register: latest_action_script
+
+    - name: Execute the PowerShell sec_action script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{{ latest_action_script.stdout_lines[0] }}"
+      become: yes
+      become_user: jcadmin
+      async: 10
+      poll: 0
+
+    - name: Pause for 10 seconds
+      pause:
+        seconds: 10
+
+    - name: Execute the PowerShell script on the remote server
+      win_shell: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\JOYSEC\\excute.ps1
+      become: yes
+      become_user: jcadmin
+      async: 120
+      poll: 0
+
+    - name: Pause for 100 seconds
+      pause:
+        seconds: 100
+
+    - name: Get current date
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+    - name: Find the latest log file
+      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*{{ current_date }}*.log" | Sort-Object -Property LastWriteTime | Select-Object -Last 1 | Select-Object -ExpandProperty FullName
+      register: latest_log_file
+
+    - name: Fetch the latest log file from remote server
+      fetch:
+        src: "{{ latest_log_file.stdout_lines[0] }}"
+        dest: "/seclog/"
+        flat: yes

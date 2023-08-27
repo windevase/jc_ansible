@@ -1,0 +1,43 @@
+---
+- name: Copy and execute script on Linux target server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Check if /linuxsec directory exists on remote server
+      stat:
+        path: /linuxsec/
+      register: linuxsec_dir
+
+    - name: Copy files from /linuxsec to remote server
+      copy:
+        src: /linuxsec/
+        dest: /linuxsec/
+
+    - name: Find the latest version of the script
+      shell: find /linuxsec/ -type f -name "*-linux_*.sh" | sort -V | tail -n 1
+      register: latest_script
+
+    - name: Execute script on remote server
+      script: "{{ latest_script.stdout }}"
+      become: yes
+      args:
+        chdir: /linuxsec/
+
+    - name: Pause for 20 seconds
+      pause:
+        seconds: 20
+
+    - name: Get current date
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+    - name: Find log files
+      shell: find /linuxsec/ -type f -name "*{{ current_date }}*.log" | sort -V | tail -n 1
+      register: log_files
+
+    - name: Fetch log files from remote server
+      fetch:
+        src: "{{ item }}"
+        dest: "/seclog/"
+        flat: yes
+      with_items: "{{ log_files.stdout_lines }}"

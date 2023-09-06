@@ -1,0 +1,10 @@
+환변 변수 추가
+export ANSIBLE_HOST_KEY_CHECKING=False
+
+
+해당 경로에 파일생성
+~/.ansible.cfg 
+
+내용 입력
+[defaults]
+host_key_checking = False

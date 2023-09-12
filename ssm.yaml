@@ -1,0 +1,24 @@
+---
+- name: Copy and execute script on Linux target server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Check if /ssm directory exists on remote server
+      stat:
+        path: /ssm/
+      register: ssm_dir
+
+    - name: Copy files from /ssm to remote server
+      copy:
+        src: /ssm/
+        dest: /ssm/
+
+    - name: Find the latest version of the script
+      shell: find /ssm/ -type f -name "ssm.sh" | sort -V | tail -n 1
+      register: latest_script
+
+    - name: Execute script on remote server
+      script: "{{ latest_script.stdout }}"
+      become: yes
+      args:
+        chdir: /ssm/

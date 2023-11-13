@@ -1,0 +1,5 @@
+- name: Change password on Windows
+  hosts: all
+  tasks:
+    - name: Change password
+      ansible.windows.win_shell: net user jcadmin02 Users!234#

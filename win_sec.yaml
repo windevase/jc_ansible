@@ -24,13 +24,15 @@
       win_shell: |
         chdir C:\\JOYSEC
       become: yes
-      become_user: jcadmin
+      become_method: runas
+      become_user: jcadmin02
 
     - name: Execute the PowerShell script on the remote server
       win_shell: |
         powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\JOYSEC\\excute.ps1
       become: yes
-      become_user: jcadmin
+      become_method: runas
+      become_user: jcadmin02
       async: 120
       poll: 0
 
@@ -61,6 +63,7 @@
       win_shell:
         powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
       become: yes
-      become_user: jcadmin
+      become_method: runas
+      become_user: jcadmin02
       async: 120
       poll: 0

@@ -1,0 +1,21 @@
+- name: Ansible Playbook for copy the modified grafana agent-config file to Windows Server
+  hosts: all
+  tasks:
+    - name: Copy agent-config files in /grafana to the remote server
+      win_copy:
+        src: "{{ item }}"
+        dest: "C:\\Program Files\\Grafana Agent\\"
+      with_fileglob:
+        - "/grafana/agent-config.yaml"
+
+    - name: Stop Grafana Agent service
+      win_shell: |
+        Stop-Service -Name "Grafana Agent"
+      args:
+        executable: powershell
+
+    - name: Start Grafana Agent service
+      win_shell: |
+        Start-Service -Name "Grafana Agent"
+      args:
+        executable: powershell

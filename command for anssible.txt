@@ -9,3 +9,9 @@ ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_fetch.yaml
 ansible-playbook -i inventory_aws_ec2.yaml -i win_hosts win_sec.yaml
 
 ansible-playbook -i hosts -i win_hosts win_sec.yaml
+
+ansible-playbook -i hosts -i var_http_win win_sec.yaml
+
+ansible-playbook -i hosts -i var_https_win win_sec.yaml
+
+ansible-playbook -i hosts -i var_linux linux_sec.yaml

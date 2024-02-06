@@ -1,0 +1,27 @@
+- name: Ansible Playbook for Windows Server
+  hosts: all
+  tasks:
+    - name: Create a directory if it does not exist
+      win_file:
+        path: C:\\JOYSEC\\script
+        state: directory
+
+    - name: Change directory to C:\JOYSEC
+      win_shell: |
+        chdir C:\\JOYSEC
+      become: yes
+      become_user: jcadmin
+
+    - name: Get current date
+      set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+    - name: Find the latest log file
+      win_shell: Get-ChildItem -Path "C:\\JOYSEC\\*{{ current_date }}*.log" | Sort-Object -Property LastWriteTime | Select-Object -Last 1 | Select-Object -ExpandProperty FullName
+      register: latest_log_file
+
+    - name: Fetch the latest log file from remote server
+      fetch:
+        src: "{{ latest_log_file.stdout_lines[0] }}"
+        dest: "/seclog/"
+        flat: yes

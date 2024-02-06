@@ -1,0 +1,14 @@
+#ansible-galaxy collection install chocolatey.chocolatey 명령어 실행으로 콜렉션 확인 보통은 설치되어 있음
+---
+- hosts: all
+  tasks:
+    - name: Ensure Chocolatey is installed
+      chocolatey.chocolatey.win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Install prometheus-windows-exporter with custom parameters
+      chocolatey.chocolatey.win_chocolatey:
+        name: prometheus-windows-exporter.install
+        params: "'/ListenPort:9100'"
+        state: present

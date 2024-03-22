@@ -18,10 +18,11 @@
       register: latest_script
 
     - name: Execute script on remote server
-      script: "{{ latest_script.stdout }}"
+      shell: "sh \"{{ latest_script.stdout }}\""
       become: yes
       args:
         chdir: /linuxsec/
+      poll: 0
 
     - name: Pause for 20 seconds
       pause:

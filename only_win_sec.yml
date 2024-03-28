@@ -53,17 +53,3 @@
         src: "{{ latest_log_file.stdout_lines[0] }}"
         dest: "/seclog/"
         flat: yes
-
-    - name: Copy winlogbeat-configure.ps1 file to the remote server
-      win_copy:
-        src: /winlogbeat/for_all-winlogbeat-configure.ps1
-        dest: C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
-
-    - name: Execute the winlogbeat-configure PowerShell script on the remote server
-      win_shell:
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\joycity-system\\winlogbeat\\for_all-winlogbeat-configure.ps1
-      become: yes
-      become_method: runas
-      become_user: jcadmin
-      async: 120
-      poll: 0

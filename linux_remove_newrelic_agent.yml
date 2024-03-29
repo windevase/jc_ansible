@@ -1,0 +1,12 @@
+---
+- name: Uninstall Fluent Bit and New Relic Infrastructure Agent
+  hosts: linux
+  become: yes
+
+  tasks:
+  - name: Uninstall Fluent Bit and New Relic Infrastructure Agent
+    ansible.builtin.yum:
+      name:
+        - fluent-bit
+        - newrelic-infra
+      state: absent

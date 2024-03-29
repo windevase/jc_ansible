@@ -1,0 +1,10 @@
+---
+- name: Uninstall New Relic Infrastructure Agent
+  hosts: all
+
+  tasks:
+  - name: Uninstall New Relic Infrastructure Agent
+    ansible.windows.win_shell: |
+      Get-WmiObject -Query "SELECT * FROM Win32_Product WHERE (Name LIKE 'New Relic Infrastructure Agent%')" | ForEach-Object { $_.Uninstall() }
+    args:
+      executable: powershell
